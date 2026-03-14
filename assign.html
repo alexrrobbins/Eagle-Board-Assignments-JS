@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eagle Board Assignments</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .section { margin-bottom: 30px; }
+        .list { border: 1px solid #ccc; padding: 10px; min-height: 50px; }
+        .entry { margin: 5px 0; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>Eagle Board Assignments</h1>
+
+    <div class="section">
+        <h2>Candidates</h2>
+        <label for="candidateName">Candidate Name:</label>
+        <input type="text" id="candidateName">
+        <label for="candidateTroop">Troop Number:</label>
+        <input type="number" id="candidateTroop">
+        <button id="addCandidate">Add Candidate</button>
+        <div class="list" id="candidateList"></div>
+    </div>
+
+    <div class="section">
+        <h2>Chairpersons</h2>
+        <label for="chairpersonName">Chairperson Name:</label>
+        <input type="text" id="chairpersonName">
+        <label for="chairpersonTroop">Troop Number:</label>
+        <input type="number" id="chairpersonTroop">
+        <button id="addChairperson">Add Chairperson</button>
+        <div class="list" id="chairpersonList"></div>
+    </div>
+
+    <div id="status"></div>
+
+    <script src="assign.js"></script>
+</body>
+</html>
