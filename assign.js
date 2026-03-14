@@ -6,11 +6,22 @@ document.getElementById('addCandidate').addEventListener('click', addCandidate);
 document.getElementById('addChairperson').addEventListener('click', addChairperson);
 document.getElementById('assignButton').addEventListener('click', assign);
 
+function setInvalidStatus(messages) {
+    const invalidStatusDiv = document.getElementById('invalidStatus');
+    if (messages && messages.length) {
+        invalidStatusDiv.textContent = `Invalid entries skipped: ${messages.join('; ')}`;
+    } else {
+        invalidStatusDiv.textContent = '';
+    }
+}
+
 function addCandidate() {
     const input = document.getElementById('candidateInput').value.trim();
     if (input) {
         const lines = input.split('\n');
         let added = false;
+        const invalidEntries = [];
+
         lines.forEach(line => {
             const parts = line.split(',');
             if (parts.length === 2) {
@@ -21,12 +32,20 @@ function addCandidate() {
                     parents.push({ candidateName: name, troop: parseInt(troop), parentNum: 1, fullName: `${name} ${troop} Parent 1` });
                     parents.push({ candidateName: name, troop: parseInt(troop), parentNum: 2, fullName: `${name} ${troop} Parent 2` });
                     added = true;
+                } else {
+                    invalidEntries.push(`${line.trim()} (invalid troop)`);
                 }
+            } else if (line.trim()) {
+                invalidEntries.push(`${line.trim()} (expected format: name,troop)`);
             }
         });
+
         if (added) {
             document.getElementById('candidateInput').value = '';
             updateDisplay();
+            setInvalidStatus([]);
+        } else if (invalidEntries.length) {
+            setInvalidStatus(invalidEntries);
         }
     }
 }
@@ -36,6 +55,8 @@ function addChairperson() {
     if (input) {
         const lines = input.split('\n');
         let added = false;
+        const invalidEntries = [];
+
         lines.forEach(line => {
             const parts = line.split(',');
             if (parts.length === 2) {
@@ -44,12 +65,20 @@ function addChairperson() {
                 if (name && troop && !isNaN(parseInt(troop))) {
                     chairpersons.push({ name, troop: parseInt(troop) });
                     added = true;
+                } else {
+                    invalidEntries.push(`${line.trim()} (invalid troop)`);
                 }
+            } else if (line.trim()) {
+                invalidEntries.push(`${line.trim()} (expected format: name,troop)`);
             }
         });
+
         if (added) {
             document.getElementById('chairpersonInput').value = '';
             updateDisplay();
+            setInvalidStatus([]);
+        } else if (invalidEntries.length) {
+            setInvalidStatus(invalidEntries);
         }
     }
 }
