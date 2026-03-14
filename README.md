@@ -11,3 +11,5 @@ The program assigns Eagle candidates to their boards with the following requirem
 Known bugs:
 
 -Uses random sort algorithms. If an error is displayed due to an assignment mismatch caused by this bug, hit the assignment button again until you have satisfactory results. I may return to fix this later.
+
+Site URL: https://alexrrobbins.github.io/Eagle-Board-Assignments-JS/assign.html
