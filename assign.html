@@ -9,7 +9,8 @@
         .section { margin-bottom: 30px; }
         .list { border: 1px solid #ccc; padding: 10px; min-height: 50px; }
         .entry { margin: 5px 0; }
-        .error { color: red; }
+        .error { color: red; white-space: pre-wrap; }
+        .danger { background: #c62828; color: white; border: none; padding: 8px 12px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -38,11 +39,16 @@
 
     <div class="section">
         <button id="assignButton">Assign Candidates to Chairpersons and Parents</button>
+        <button id="copyButton" style="margin-left: 8px;">Copy Assignments</button>
         <div class="list" id="assignmentList"></div>
     </div>
 
     <div id="invalidStatus" class="error"></div>
     <div id="status"></div>
+
+    <div class="section">
+        <button id="clearButton" class="danger">Clear All</button>
+    </div>
 
     <script src="assign.js"></script>
 </body>
