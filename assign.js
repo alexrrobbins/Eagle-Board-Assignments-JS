@@ -43,7 +43,7 @@ function addCandidate() {
         if (added) {
             document.getElementById('candidateInput').value = '';
             updateDisplay();
-            setInvalidStatus([]);
+            setInvalidStatus(invalidEntries);
         } else if (invalidEntries.length) {
             setInvalidStatus(invalidEntries);
         }
@@ -76,7 +76,7 @@ function addChairperson() {
         if (added) {
             document.getElementById('chairpersonInput').value = '';
             updateDisplay();
-            setInvalidStatus([]);
+            setInvalidStatus(invalidEntries);
         } else if (invalidEntries.length) {
             setInvalidStatus(invalidEntries);
         }
