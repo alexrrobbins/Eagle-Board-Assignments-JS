@@ -18,12 +18,23 @@ function setInvalidStatus(messages) {
     }
 }
 
+function setStatusError(message) {
+    const statusDiv = document.getElementById('status');
+    if (message) {
+        statusDiv.textContent = message;
+        statusDiv.className = 'error';
+    } else {
+        updateStatus();
+    }
+}
+
 function addCandidate() {
     const input = document.getElementById('candidateInput').value.trim();
     if (input) {
         const lines = input.split('\n');
         let added = false;
         const invalidEntries = [];
+        const duplicateEntries = [];
 
         lines.forEach(line => {
             const parts = line.split(',');
@@ -31,10 +42,16 @@ function addCandidate() {
                 const name = parts[0].trim();
                 const troop = parts[1].trim();
                 if (name && troop && !isNaN(parseInt(troop))) {
-                    candidates.push({ name, troop: parseInt(troop) });
-                    parents.push({ candidateName: name, troop: parseInt(troop), parentNum: 1, fullName: `${name} ${troop} Parent 1` });
-                    parents.push({ candidateName: name, troop: parseInt(troop), parentNum: 2, fullName: `${name} ${troop} Parent 2` });
-                    added = true;
+                    const numericTroop = parseInt(troop);
+                    const isDuplicate = candidates.some(c => c.name === name && c.troop === numericTroop);
+                    if (isDuplicate) {
+                        duplicateEntries.push(`${line.trim()} (duplicate)`);
+                    } else {
+                        candidates.push({ name, troop: numericTroop });
+                        parents.push({ candidateName: name, troop: numericTroop, parentNum: 1, fullName: `${name} ${troop} Parent 1` });
+                        parents.push({ candidateName: name, troop: numericTroop, parentNum: 2, fullName: `${name} ${troop} Parent 2` });
+                        added = true;
+                    }
                 } else {
                     invalidEntries.push(`${line.trim()} (invalid troop)`);
                 }
@@ -47,8 +64,11 @@ function addCandidate() {
             document.getElementById('candidateInput').value = '';
             updateDisplay();
             setInvalidStatus(invalidEntries);
-        } else if (invalidEntries.length) {
+            if (duplicateEntries.length) setStatusError(`Duplicate entries skipped:\n${duplicateEntries.join('\n')}`);
+            else setStatusError('');
+        } else if (invalidEntries.length || duplicateEntries.length) {
             setInvalidStatus(invalidEntries);
+            if (duplicateEntries.length) setStatusError(`Duplicate entries skipped:\n${duplicateEntries.join('\n')}`);
         }
     }
 }
@@ -59,6 +79,7 @@ function addChairperson() {
         const lines = input.split('\n');
         let added = false;
         const invalidEntries = [];
+        const duplicateEntries = [];
 
         lines.forEach(line => {
             const parts = line.split(',');
@@ -66,8 +87,14 @@ function addChairperson() {
                 const name = parts[0].trim();
                 const troop = parts[1].trim();
                 if (name && troop && !isNaN(parseInt(troop))) {
-                    chairpersons.push({ name, troop: parseInt(troop) });
-                    added = true;
+                    const numericTroop = parseInt(troop);
+                    const isDuplicate = chairpersons.some(c => c.name === name && c.troop === numericTroop);
+                    if (isDuplicate) {
+                        duplicateEntries.push(`${line.trim()} (duplicate)`);
+                    } else {
+                        chairpersons.push({ name, troop: numericTroop });
+                        added = true;
+                    }
                 } else {
                     invalidEntries.push(`${line.trim()} (invalid troop)`);
                 }
@@ -80,8 +107,11 @@ function addChairperson() {
             document.getElementById('chairpersonInput').value = '';
             updateDisplay();
             setInvalidStatus(invalidEntries);
-        } else if (invalidEntries.length) {
+            if (duplicateEntries.length) setStatusError(`Duplicate entries skipped:\n${duplicateEntries.join('\n')}`);
+            else setStatusError('');
+        } else if (invalidEntries.length || duplicateEntries.length) {
             setInvalidStatus(invalidEntries);
+            if (duplicateEntries.length) setStatusError(`Duplicate entries skipped:\n${duplicateEntries.join('\n')}`);
         }
     }
 }
@@ -228,4 +258,5 @@ function clearAll() {
     updateDisplay();
     setInvalidStatus([]);
     setAssignmentErrors([]);
+    setStatusError('');
 }
