@@ -4,6 +4,7 @@ let parents = [];
 
 document.getElementById('addCandidate').addEventListener('click', addCandidate);
 document.getElementById('addChairperson').addEventListener('click', addChairperson);
+document.getElementById('assignButton').addEventListener('click', assign);
 
 function addCandidate() {
     const input = document.getElementById('candidateInput').value.trim();
@@ -17,8 +18,8 @@ function addCandidate() {
                 const troop = parts[1].trim();
                 if (name && troop && !isNaN(parseInt(troop))) {
                     candidates.push({ name, troop: parseInt(troop) });
-                    parents.push(`${name} ${troop} Parent 1`);
-                    parents.push(`${name} ${troop} Parent 2`);
+                    parents.push({ candidateName: name, troop: parseInt(troop), parentNum: 1, fullName: `${name} ${troop} Parent 1` });
+                    parents.push({ candidateName: name, troop: parseInt(troop), parentNum: 2, fullName: `${name} ${troop} Parent 2` });
                     added = true;
                 }
             }
@@ -77,7 +78,7 @@ function updateParentList() {
     parents.forEach((parent, index) => {
         const div = document.createElement('div');
         div.className = 'entry';
-        div.textContent = `${index + 1}. ${parent}`;
+        div.textContent = `${index + 1}. ${parent.fullName}`;
         listDiv.appendChild(div);
     });
 }
@@ -91,4 +92,46 @@ function updateStatus() {
         statusDiv.textContent = `Lists have different lengths. Candidates: ${candidates.length}, Chairpersons: ${chairpersons.length}`;
         statusDiv.className = 'error';
     }
+}
+
+function assign() {
+    if (candidates.length !== chairpersons.length) {
+        alert('Lists must be balanced to assign.');
+        return;
+    }
+    const assignments = [];
+    candidates.forEach(candidate => {
+        // Find available chairpersons (different troop)
+        const availableChairs = chairpersons.filter(chair => chair.troop !== candidate.troop);
+        if (availableChairs.length === 0) {
+            alert(`No available chairperson for candidate ${candidate.name}`);
+            return;
+        }
+        const chair = availableChairs[Math.floor(Math.random() * availableChairs.length)];
+
+        // Find available parents (not own)
+        const availableParents = parents.filter(parent => parent.candidateName !== candidate.name);
+        if (availableParents.length < 2) {
+            alert(`Not enough available parents for candidate ${candidate.name}`);
+            return;
+        }
+        // Shuffle and pick two
+        const shuffled = availableParents.sort(() => 0.5 - Math.random());
+        const parent1 = shuffled[0];
+        const parent2 = shuffled[1];
+
+        assignments.push(`${candidate.name}, ${chair.name}, ${parent1.fullName}, ${parent2.fullName}`);
+    });
+    updateAssignmentList(assignments);
+}
+
+function updateAssignmentList(assignments) {
+    const listDiv = document.getElementById('assignmentList');
+    listDiv.innerHTML = '';
+    assignments.forEach((assignment, index) => {
+        const div = document.createElement('div');
+        div.className = 'entry';
+        div.textContent = assignment;
+        listDiv.appendChild(div);
+    });
 }
